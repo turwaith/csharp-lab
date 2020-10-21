@@ -8,10 +8,27 @@ namespace console_screen_background
     {
         static void Main(string[] args)
         {            
+            ConsoleColor originalForeground = Console.ForegroundColor;
+            ConsoleColor originalBackground = Console.BackgroundColor;
             Random rndNb = new Random();
             ConsoleKeyInfo cki;
-            int consoleHeight = Console.WindowHeight,
-                consoleWidth = Console.WindowWidth;
+            char charToDisplay = '*'; 
+            int speed = 500;
+
+            for(int i = 0; i < args.Length; i++)
+            {
+                switch (i)
+                {
+                    case 0:  
+                        charToDisplay = args[0][0];
+                    break;
+                    case 1:                        
+                        int.TryParse(args[1], out speed);
+                        if(speed == 0) speed = 500;                        
+                    break;
+                }                                 
+            }
+
 
             Console.Clear();
             Console.CursorVisible = false;
@@ -19,16 +36,21 @@ namespace console_screen_background
             do{
                 while(Console.KeyAvailable == false)
                 {
+                    int consoleHeight = Console.WindowHeight,
+                        consoleWidth = Console.WindowWidth;
+
                     Console.SetCursorPosition(rndNb.Next(0, consoleWidth), rndNb.Next(0, consoleHeight));
                     Console.ForegroundColor = (ConsoleColor) rndNb.Next(0,16);
-                    Console.Write('*');
-                    Thread.Sleep(25);
+                    Console.Write(charToDisplay);
+                    Thread.Sleep(speed);
                 } 
 
                 cki = Console.ReadKey(true);
             }while(cki.Key != ConsoleKey.Enter);
 
             Console.Clear();
+            Console.BackgroundColor = originalBackground;
+            Console.ForegroundColor = originalForeground;
             Console.CursorVisible = true;
             /*Timer screenTimer = new Timer();
             ConsoleColor originalForeground = Console.ForegroundColor;
@@ -46,8 +68,6 @@ namespace console_screen_background
             screenTimer.Stop();
 
             Console.Clear();
-            Console.SetCursorPosition(0,0);
-            Console.ResetColor();
             Console.BackgroundColor = originalBackground;
             Console.ForegroundColor = originalForeground;
             Console.CursorVisible = true;    
