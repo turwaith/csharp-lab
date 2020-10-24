@@ -7,51 +7,52 @@ namespace console_screen_background
     class Program
     {
         static void Main(string[] args)
-        {            
+        {
             ConsoleColor originalForeground = Console.ForegroundColor;
             ConsoleColor originalBackground = Console.BackgroundColor;
             Random rndNb = new Random();
             ConsoleKeyInfo cki;
-            char charToDisplay = '*'; 
-            int speed = 500;
+            char charToDisplay = '*';
+            int speed = 500;            
 
-            for(int i = 0; i < args.Length; i++)
+            for (int i = 0; i < args.Length; i++)
             {
                 switch (i)
                 {
-                    case 0:  
+                    case 0:
                         charToDisplay = args[0][0];
-                    break;
-                    case 1:                        
+                        break;
+                    case 1:
                         int.TryParse(args[1], out speed);
-                        if(speed == 0) speed = 500;                        
-                    break;
-                }                                 
+                        if (speed == 0 || speed < 500) speed = 500;
+                        break;
+                }
             }
 
-
+            Console.Title = "Animated background";
             Console.Clear();
             Console.CursorVisible = false;
-            
-            do{
-                while(Console.KeyAvailable == false)
-                {
-                    int consoleHeight = Console.WindowHeight,
-                        consoleWidth = Console.WindowWidth;
 
-                    Console.SetCursorPosition(rndNb.Next(0, consoleWidth), rndNb.Next(0, consoleHeight));
-                    Console.ForegroundColor = (ConsoleColor) rndNb.Next(0,16);
+            do
+            {
+                while (Console.KeyAvailable == false)
+                {                    
+                    Console.SetBufferSize(Console.WindowWidth + Console.WindowLeft, Console.WindowHeight + Console.WindowTop);
+                    
+                    Console.SetCursorPosition(rndNb.Next(0, Console.WindowWidth), rndNb.Next(0, Console.WindowHeight));
+                    Console.ForegroundColor = (ConsoleColor)rndNb.Next(0, 16);
                     Console.Write(charToDisplay);
                     Thread.Sleep(speed);
-                } 
+                }
 
                 cki = Console.ReadKey(true);
-            }while(cki.Key != ConsoleKey.Enter);
+            } while (cki.Key != ConsoleKey.Enter);
 
             Console.Clear();
             Console.BackgroundColor = originalBackground;
             Console.ForegroundColor = originalForeground;
             Console.CursorVisible = true;
+            
             /*Timer screenTimer = new Timer();
             ConsoleColor originalForeground = Console.ForegroundColor;
             ConsoleColor originalBackground = Console.BackgroundColor;
@@ -71,7 +72,7 @@ namespace console_screen_background
             Console.BackgroundColor = originalBackground;
             Console.ForegroundColor = originalForeground;
             Console.CursorVisible = true;    
-            */     
+            */
         }
 
         /*public static void OnTimedEvent(Object source, System.Timers.ElapsedEventArgs e)
